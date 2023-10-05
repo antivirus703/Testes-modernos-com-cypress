@@ -1,18 +1,25 @@
 /// <reference types="cypress"/>
 
 describe('Cypress basics', () => {
-  it('Should visit a page and assert title', () => {
+  it.only('Should visit a page and assert title', () => {
     cy.visit('https://wcaquino.me/cypress/componentes.html')
 
     // const title = cy.title()
     // console.log(title)
 
-    cy.pause() // vai fazendo cada teste e parando
+    // cy.pause() // vai fazendo cada teste e parando
+
+    cy.title().should('be.equal', 'Campo de Treinamento')
+    cy.title().should('contain', 'Campo')
 
     cy.title()
     .should('be.equal', 'Campo de Treinamento')
     .and('contain', 'Campo')//.debug() //utilizando  debug no final ele verifica a informação no should
     //colocando o should no title, busca o titulo da página
+
+    cy.title().then(title => {
+      console.log(title)
+    })
 
   })
 
