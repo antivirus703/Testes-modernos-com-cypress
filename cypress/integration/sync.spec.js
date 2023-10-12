@@ -49,10 +49,31 @@ describe('Esperas', () => {
       .should('have.length', 2)
   })
 
-  it.only('Click retry', () => {
+  it('Click retry', () => {
     cy.get('#buttonCount')
     .click()
     .should('have.value', '1')
   })
+
+  // it.only('Should vs Then', () => {
+  //   cy.get('#buttonListDOM').click()
+  //   cy.get('#lista li span').then($el => { //$el é um elemento HTML que foi capturado, que será tratado com jquery
+  //     .should('have.length', 1)
+  //     console.log($el)
+  //     expect($el).to.have.length(1)
+  //     THEN aguarda até que o GET na lista li span seja finalizado para ser executado
+  //     SHOULD faz a busca e fica fazendo a verificação, sendo executado ao longo da espera. O GET com o should é mais aninhado
+  //   }).and('have.id', 'buttonListDOM')
+  // })
+
+  it.only('Should vs Then 2', () => {
+    cy.get('#buttonListDOM').should($el => { //com um should não funcionará por conta de return pois o should sempre retorna o mesmo objeto
+      expect($el).to.have.length(1)
+      return 2
+      //se utilizar o should, ele irá ignorar o que esta dentro do return. Sempre irá retornar ao final da execução o mesmo objeto recebido
+      //no then, se não retornar nada, vai sair o mesmo objeto. Utilizando o return do then eu mudo o objeto que é retornado
+    }).and('eq', 2) // fazendo dessa forma o then funcionará
+      .and('not.have.id', 'buttonListDOM')
+  }) //caso precise fazer novas buscas em um novo bloco, SEMPRE UTILIZE O THEN, pois o should vai acabar entrando em loop infinito
 
 })
