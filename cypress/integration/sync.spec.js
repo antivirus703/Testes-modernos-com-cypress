@@ -67,7 +67,7 @@ describe('Esperas', () => {
   // })
 
   it.only('Should vs Then 2', () => {
-    cy.get('#buttonListDOM').should($el => { //com um should não funcionará por conta de return pois o should sempre retorna o mesmo objeto
+    cy.get('#buttonListDOM').then($el => { //com um should não funcionará por conta de return pois o should sempre retorna o mesmo objeto
       expect($el).to.have.length(1)
       return 2
       //se utilizar o should, ele irá ignorar o que esta dentro do return. Sempre irá retornar ao final da execução o mesmo objeto recebido
