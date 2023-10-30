@@ -10,11 +10,12 @@ describe('Work with alerts', () => {
   })
 
   it('Alert', () => {
-    cy.get('#alert').click()
-    cy.on('window:alert', msg => {
-      console.log(msg)
-      expect(msg).to.be.equal('Alert Simples')
-    })
+    // cy.get('#alert').click()
+    // cy.on('window:alert', msg => {
+    //   console.log(msg)
+    //   expect(msg).to.be.equal('Alert Simples')
+    // })
+    cy.clickAlert('#alert', 'Alert Simples')
   })
 
   it('Alert com mock', () => {
@@ -27,10 +28,9 @@ describe('Work with alerts', () => {
   })
 
 
-  // TODO verificar o porque desse teste não verificar o expect corretamente (posso verificar se passa com should)
   it('Confirm', () => {
 
-    cy.on('window:alert', msg => {
+    cy.on('window:confirm', msg => {
       expect(msg).to.be.equal('Confirm Simples')
     })
     cy.on('window:alert', msg => {
@@ -40,8 +40,7 @@ describe('Work with alerts', () => {
   })
 
   it('Deny', () => {
-
-    cy.on('window:alert', msg => {
+    cy.on('window:confirm', msg => {
       expect(msg).to.be.equal('Confirm Simples')
       return false
     })
@@ -68,7 +67,7 @@ describe('Work with alerts', () => {
     cy.get('#prompt').click()
   })
 
-  it.only('Validando mensagens', () => {
+  it('Validando mensagens', () => {
     const stub = cy.stub().as('alerta')
     cy.on('window:alert', stub)
     cy.get('#formCadastrar').click()
@@ -77,14 +76,14 @@ describe('Work with alerts', () => {
     cy.get('#formNome').type('Norton')
     cy.get('#formCadastrar').click()
       .then(() => expect(stub.getCall(1)).to.be.calledWith('Sobrenome eh obrigatorio'))
-      cy.get('[data-cy=dataSobrenome]').type('Berbert')  
+    cy.get('[data-cy=dataSobrenome]').type('Berbert')
 
     cy.get('#formCadastrar').click()
       .then(() => expect(stub.getCall(2)).to.be.calledWith('Sexo eh obrigatorio'))
-      cy.get('#formSexoMasc').click()
-      cy.get('#formCadastrar').click()
+    cy.get('#formSexoMasc').click()
+    cy.get('#formCadastrar').click()
 
-      cy.get('#resultado > :nth-child(1)').should('contain', 'Cadastrado')  
+    cy.get('#resultado > :nth-child(1)').should('contain', 'Cadastrado')
   })
 
 })
