@@ -6,6 +6,10 @@ import '../../support/commandsContas'
 describe('Should test at a functional level', () => {
   before(() => {
     cy.login('nortonberbert@gmail.com', 'Comunidade03@')
+  })
+
+  beforeEach(() => {
+    cy.get(loc.MENU.HOME).click()
     cy.resetApp()
   })
 
@@ -17,10 +21,10 @@ describe('Should test at a functional level', () => {
 
   it('Should update an account', () => {
     cy.acessarMenuConta()
-    cy.xpath(loc.CONTAS.Func_XP_BTN_ALTERAR('Conta inicial')).click()
+    cy.xpath(loc.CONTAS.Func_XP_BTN_ALTERAR('Conta para alterar')).click()
     cy.get(loc.CONTAS.NOME)
       .clear()
-      .type('Conta nova')
+      .type('Conta alterada')
     cy.get(loc.CONTAS.BTN_SALVAR).click()
     cy.get(loc.MESSAGE).should('contain', 'Conta atualizada com sucesso')
   })
@@ -28,7 +32,7 @@ describe('Should test at a functional level', () => {
   it('Should not creat an account with same name', () => {
     cy.acessarMenuConta()
 
-    cy.get(loc.CONTAS.NOME).type('Conta nova')
+    cy.get(loc.CONTAS.NOME).type('Conta mesmo nome')
     cy.get(loc.CONTAS.BTN_SALVAR).click()
     cy.get(loc.MESSAGE).should('contain', 'code 400')
   }) // adicionado "testIsolation: false", no cypress.config.js para que não retornem para a página vazia em cada teste
@@ -39,18 +43,33 @@ describe('Should test at a functional level', () => {
     cy.wait(4000)
     cy.get(loc.MOVIMENTACAO.VALOR).type('123')
     cy.get(loc.MOVIMENTACAO.INTERESSADO).type('Nubank')
-    cy.get(loc.MOVIMENTACAO.CONTA).select('Conta nova')
+    cy.get(loc.MOVIMENTACAO.CONTA).select('Conta para movimentacoes')
     cy.get(loc.MOVIMENTACAO.STATUS).click()
     cy.get(loc.MOVIMENTACAO.BTN_SALVAR).click()
     cy.get(loc.MESSAGE).should('contain', 'sucesso')
 
     cy.get(loc.EXTRATO.LINHAS).should('have.length', 7)
-    cy.get(loc.EXTRATO.BUSCA_ELEMENTO).should('exist')
+    cy.get(loc.EXTRATO.Func_XP_BUSCA_ELEMENTO).should('exist')
   })
 
-  it('Should get balance', () => {
+  it.only('Should get balance', () => {
     cy.get(loc.MENU.HOME).click()
-    cy.xpath(loc.SALDO.Func_XP_SALDO_CONTA('Conta nova')).should('contain', '123')
+    cy.xpath(loc.SALDO.Func_XP_SALDO_CONTA('Conta para saldo')).should('contain', '534,00')
+
+    cy.get(loc.MENU.EXTRATO).click()
+    cy.xpath(loc.EXTRATO.Func_XP_ALTERAR_ELEMENTO('Movimentacao 1, calculo saldo')).click()
+    cy.get(loc.MOVIMENTACAO.DESCRICAO).should('have.value', 'Movimentacao 1, calculo saldo')
+    cy.get(loc.MOVIMENTACAO.STATUS).click()
+    cy.get(loc.MOVIMENTACAO.BTN_SALVAR).click()
+    cy.get(loc.MESSAGE).should('contain', 'sucesso')
+
+    cy.get(loc.MENU.HOME).click()
+    cy.xpath(loc.SALDO.Func_XP_SALDO_CONTA('Conta para saldo')).should('contain', '4.034,00')
+  })
+
+  it('Should remove a transaction', () => {
+    cy.get(loc.MENU.EXTRATO).click()
+    cy.xpath(loc.EXTRATO.Func_XP_REMOVER_ELEMENTO('Movimentacao para exclusao')).click()
+    cy.get(loc.MESSAGE).should('contain', 'Movimentação removida com sucesso')
   })
 })  
-

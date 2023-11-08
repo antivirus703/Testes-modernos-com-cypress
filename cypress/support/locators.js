@@ -10,7 +10,8 @@ const locators = {
         SETTINGS: '[data-test=menu-settings]',
         CONTAS: '[href="/contas"]',
         RESET: '[href="/reset"]',
-        MOVIMENTACAO: '[data-test=menu-movimentacao]'
+        MOVIMENTACAO: '[data-test=menu-movimentacao]',
+        EXTRATO: '[data-test=menu-extrato]'
     },
 
     CONTAS: {
@@ -30,7 +31,9 @@ const locators = {
 
     EXTRATO: {
         LINHAS: '.list-group > li',
-        BUSCA_ELEMENTO: ':nth-child(7) > .row > .col-12 > :nth-child(1) > span'
+        Func_XP_BUSCA_ELEMENTO: ':nth-child(7) > .row > .col-12 > :nth-child(1) > span',
+        Func_XP_REMOVER_ELEMENTO: conta => `//span[contains(., '${conta}')]/../../..//i[@class='far fa-trash-alt']`,
+        Func_XP_ALTERAR_ELEMENTO: conta => `//span[contains(., '${conta}')]/../../..//i[@class='fas fa-edit']`
     },
 
     SALDO: {
