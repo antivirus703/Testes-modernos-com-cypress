@@ -5,7 +5,32 @@ import '../../support/commandsContas'
 
 describe('Should test at a functional level', () => {
   before(() => {
-    cy.login('nortonberbert@gmail.com', 'senha@')
+    cy.intercept({
+      method: 'POST',
+      url: '/signin'
+    },
+      {
+        id: 12565,
+        nome: "Usuário falso",
+        token: "string grande aceita"
+      }
+    ).as('signin')
+
+    cy.intercept({
+      method: 'GET',
+      url: '/saldo'
+    }, [{
+      conta_id: 999,
+      conta: "Conta fake 1",
+      saldo: "1500.00"
+    },
+    {
+      conta_id: 9909,
+      conta: "Inter",
+      saldo: "15000.00"
+    }]
+    ).as('saldo')
+    cy.login('Usuário falso', 'string grande aceita')
   })
 
   beforeEach(() => {
@@ -52,7 +77,7 @@ describe('Should test at a functional level', () => {
     cy.get(loc.EXTRATO.Func_XP_BUSCA_ELEMENTO).should('exist')
   })
 
-  it.only('Should get balance', () => {
+  it('Should get balance', () => {
     cy.get(loc.MENU.HOME).click()
     cy.xpath(loc.SALDO.Func_XP_SALDO_CONTA('Conta para saldo')).should('contain', '534,00')
 
