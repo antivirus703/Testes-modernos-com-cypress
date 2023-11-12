@@ -35,8 +35,8 @@ Cypress.Commands.add('clickAlert', (locator, message) => {
 
 Cypress.Commands.add('login', (user, passwd) => { // este comando é para o frontend
   cy.visit('https://barrigareact.wcaquino.me/')
-  cy.get(loc.LOGIN.USER).type('nortonberbert@gmail.com')
-  cy.get(loc.LOGIN.PASSWORD).type('Comunidade03@')
+  cy.get(loc.LOGIN.USER).type(user)
+  cy.get(loc.LOGIN.PASSWORD).type(passwd)
   cy.get(loc.LOGIN.BTN_LOGIN).click()
   cy.get(loc.MESSAGE).should('contain', 'Bem vindo')
 })
