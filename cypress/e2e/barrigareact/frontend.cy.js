@@ -4,6 +4,10 @@ import loc from '../../support/locators'
 import '../../support/commandsContas'
 
 describe('Should test at a functional level', () => {
+  after(() => {
+    cy.clearLocalStorage()
+  })
+
   before(() => {
     cy.intercept({
       method: 'POST',
@@ -30,23 +34,109 @@ describe('Should test at a functional level', () => {
       saldo: "15000.00"
     }]
     ).as('saldo')
+    cy.clearLocalStorage()
     cy.login('Usuário falso', 'string grande aceita')
   })
 
   beforeEach(() => {
     cy.get(loc.MENU.HOME).click()
-    cy.resetApp()
+    // cy.resetApp()
   })
 
   it('Should create an account', () => {
+    cy.intercept({
+      method: 'GET',
+      url: '/contas'
+    },
+      [{
+        id: 1,
+        nome: 'Conta de luz',
+        visivel: true,
+        usuario_id: 42526
+      },
+      {
+        id: 2,
+        nome: 'Conta de agua',
+        visivel: true,
+        usuario_id: 42526
+      }]
+    ).as('contas')
+
+    cy.intercept({
+      method: 'POST',
+      url: '/contas',
+    },
+      [{
+        id: 3,
+        nome: 'Conta de internet',
+        visivel: true,
+        usuario_id: 42526
+      }]
+    ).as('saveAccount')
+
     cy.acessarMenuConta()
+
+    cy.intercept({
+      method: 'GET',
+      url: '/contas'
+    },
+      [{
+        id: 1,
+        nome: 'Conta de luz',
+        visivel: true,
+        usuario_id: 42526
+      },
+      {
+        id: 2,
+        nome: 'Conta de agua',
+        visivel: true,
+        usuario_id: 42526
+      },
+      {
+        id: 3,
+        nome: 'Conta de celular',
+        visivel: true,
+        usuario_id: 42526
+      }]
+    ).as('accountSave')
+
     cy.inserirConta('Conta inicial')
     cy.get(loc.MESSAGE).should('contain', 'Conta inserida com sucesso')
   })
 
-  it('Should update an account', () => {
+  it.only('Should update an account', () => {
+    cy.intercept({
+      method: 'GET',
+      url: '/contas'
+    },
+      [{
+        id: 1,
+        nome: 'Conta de luz',
+        visivel: true,
+        usuario_id: 42526
+      },
+      {
+        id: 2,
+        nome: 'Conta de agua',
+        visivel: true,
+        usuario_id: 42526
+      }]
+    ).as('contas')
+
+    cy.intercept({
+      method: 'PUT',
+      url: '/contas/**'
+    },
+    [{
+      id:1,
+      nome:'Conta para alterar 123456',
+      visivel:true,
+      usuario_id:42526
+    }]
+    )
+
     cy.acessarMenuConta()
-    cy.xpath(loc.CONTAS.Func_XP_BTN_ALTERAR('Conta para alterar')).click()
+    cy.xpath(loc.CONTAS.Func_XP_BTN_ALTERAR('Conta de luz')).click()
     cy.get(loc.CONTAS.NOME)
       .clear()
       .type('Conta alterada')
